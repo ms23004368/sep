@@ -1,162 +1,99 @@
-
 <?= $this->extend('home/dashboard') ?>
 <?= $this->Section('content') ?>
-<?php  
-$users= array( "emp1"=> 
-
-array(
-    
-    "id"=>1,
-    'firstname'=>"Peter",
-    'lastname'=>"Ben",
-    'slug'=>"abc",
-    "email"=>"abc@gmail.com",
-    'mobile'=>"0773838",
-    'role'=>"admin",
-    'status'=>"0"
+<?php
+     if(isset($_SESSION['msg'])){
+        echo $_SESSION['msg'];
+      }
+     ?>
+<div class="col-12 col-sm-12  pb-3 bg-white form-wrapper ">
 
 
-),
-"emp2"=> 
-array(
-    
-    "id"=>1,
-    'firstname'=>"Peter",
-    'lastname'=>"Ben",
-    'slug'=>"abc",
-    "email"=>"abc@gmail.com",
-    'mobile'=>"0773838",
-    'role'=>"admin",
-    'status'=>"0"
-),
-"emp2"=> 
-array(
-    
-    "id"=>1,
-    'firstname'=>"Peter",
-    'lastname'=>"Ben",
-    'slug'=>"abc",
-    "email"=>"abc@gmail.com",
-    'mobile'=>"0773838",
-    'role'=>"admin",
-    'status'=>"0"
-)
-,
-"emp3"=> 
-array(
-    
-    "id"=>1,
-    'firstname'=>"Peter",
-    'lastname'=>"Ben",
-    'slug'=>"abc",
-    "email"=>"abc@gmail.com",
-    'mobile'=>"0773838",
-    'role'=>"admin",
-    'status'=>"0"
-)
-);
-
-?>
-<section>
-</section>
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="#">Home</a></li>
-    <li class="breadcrumb-item"><a href="#">Users</a></li>
- 
-  </ol>
-</nav>
-<div class="card">
-  <div class="card-body">
-<div class="input-group rounded">
-  <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-  <span class="input-group-text border-0" id="search-addon">
-    <i class="fas fa-search"></i>
-  </span>
+<!-- Search Bar --> 
+<div class="">
+<input class="form-control" id="myInput" type="text" placeholder="Search..">
+<small> you can filter users by typing any word in the table </small>
 </div>
-<div class="card">
-  <div class="card-body">
-     <form>
-<a class="btn btn-primary" type="button" value="add User" align="right"> Add User <i class="fa fa-plus" aria-hidden="true"></i> </a>
-</form> 
-  </div>
+
+
+<div>
+	<br>
+<!-- Button trigger modal -->
+<a class="btn btn-primary"  href="/create_user">
+  Create User
+</a>
+
 </div>
-<div class="card">
-  <div class="card-body">
-<table class="table table-striped table-sm" >
 
-   <thead class="thead-dark table-dark">
-
-  <tr>
- 
-
-      <th> # </th>
-      <th> First Name </th>
-      <th> Last Name </th>
-      <th> E-mail </th>
-      <th> Contact No </th>
-      <th> Role </th>
-      <th>Status </th>
-      <th colspan=2> Action </th>
-
-  </tr>
-</thead>
-<tbody>
-
-<?php foreach($users as $user){ ?>
+</br>
+<?php if ($users) :?>
+ <table class="table table-bordered table-striped">
+<thead class="thead-light">
 <tr>
-  <td><a class=" " href="/user_profile_view/<?=esc($user['slug'],'url');?>">  <?= $user['id']?></a></td>
-  <td> <a class=" " href="/user_profile_view/<?=esc($user['slug'],'url');?>"> <?= $user['firstname']?></a> </td>
-  <td> <?= $user['lastname']?>  </td>
+      <th> ID# </th>
+      <th> First Name </th>
+      <th>  Last Name</th>
+      <th> E-mail </th>
 
-  <td> <?= $user['email']?>  </td>
-  <td> <?= $user['mobile']?>  </td>
-  <td> <?= $user['role']?>  </td>
-  <td> 
-  <?php  if ($user['status']==0){ ?>
-
- <a class="  " type="submit" href="/activate_user/<?=$user['id'];?>"><i class="fa fa-eye" aria-hidden="true"></i></a>
- <?php  }
-  else
-  { ?>
- <a class="  " href="/deactivate_user/<?=$user['id'];?>"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
-
-  
-<?php }?>  
- 
-
-
-
-</td>
-  <td><i class="fa fa-cog" aria-hidden="true" style="color:red;"></i></td>
-  <td> <i class="fa fa-trash" aria-hidden="true"></i></td>
-
+      <th> User Role </th>
+      <th> User Name </th>
+      <th> Status </th>
+      <th> Profile </th>
+      <th> Action </th>
 
 </tr>
+</thead>
+<tbody id="myTable">
+<?php foreach($users as $user){ ?>
+<tr>
+  <td> <?= $user['id']?>  </td>
+  <td> <?=$user['firstname']?>  </td>
+  <td> <?=$user['lastname']?>  </td>
+  <td> <?=$user['email']?>  </td>
 
+  <td> <?=$user['role']?>  </td>
+  <td> <?=$user['username']?>  </td>
 
+  <?php  if ($user['active']!=0){
 
+     ?>
+
+    <td>
+      <a class="  " type="submit" href="/activate_user/<?=$user['id'];?>"><i class="fa-solid fa-eye-slash"></i></a></a>
+     
+
+    </td>
+
+  <?php  }
+    else
+    { ?>
+      <td>
+      <a class="  " href="/deactivate_user/<?=$user['id'];?>"><i class="fa-solid fa-eye"></i></a>
+    
+
+    </td>
+
+    <?php } ?>
+    <?php  if ($user['status']==0){ ?>
+    <td> <a href="/admin/users/profile/create/<?=$user['id'];?>" data-toggle="tooltip" data-placement="top" title="view more about users">Add</a> </td>
+    <?php } else { ?>
+    <td> <a href="/user/profile/view/<?=$user['id'];?>" data-toggle="tooltip" data-placement="top" title="view more about users">View</a> </td>
+    <?php }?>
+<td> <a href="/edit_user/<?=$user['id'];?>" data-toggle="tooltip" data-placement="top" title="view more about users"><i class="fas fa-edit"></i>Edit</a> </td>
+
+</tr>
 <?php } ?>
-  </tbody>
+</tbody>
 </table>
+<?php else:?>
+<p> There are no courses Available for apply  </p>
+<?php endif;?>
 </div>
 
-<nav aria-label="...">
-  <ul class="pagination">
-    <li class="page-item disabled">
-      <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item active" aria-current="page">
-      <a class="page-link" href="#">2</a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#">Next</a>
-    </li>
-  </ul>
-</nav>
-</div>
-</div>
+
+
+<?= $pager->makeLinks(2, 1, 100, 'front_full') ?>
 
 <?= $this->endSection() ?>
+
+
+
